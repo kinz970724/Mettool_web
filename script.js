@@ -365,9 +365,8 @@ const globalPlotLayout = {
         size: 12,
         color: '#333333'
     },
-    // Set a generous top margin for legend+title
-    // The other margins will be set by automargin
-    margin: { t: 100, l: 60, b: 60, r: 40 },
+    // Increased bottom margin for the legend
+    margin: { t: 80, l: 60, b: 100, r: 40 },
     paper_bgcolor: '#ffffff',
     plot_bgcolor: '#f4f7f6',
     title: {
@@ -375,15 +374,15 @@ const globalPlotLayout = {
         xanchor: 'center',
         font: { size: 18, color: '#005a9c' }
     },
-    // NEW Legend: Horizontal, centered, and ABOVE the title
+    // NEW Legend: Horizontal, centered, and BELOW the plot
     legend: {
-        orientation: 'h',
-        yanchor: 'bottom',
-        y: 1.02, // 1 is top of plot, 1.02 is just above
+        orientation: 'h', // Horizontal layout
+        yanchor: 'top',    // Anchor to its top
+        y: -0.2,           // Position it 20% *below* the plot (adjust as needed)
         xanchor: 'center',
-        x: 0.5
+        x: 0.5             // Center it horizontally
     },
-    // NEW: Apply automargin to all axes to prevent cut-off labels
+    // Apply automargin to all axes to prevent cut-off labels
     xaxis: { automargin: true },
     yaxis: { automargin: true }
 };
@@ -391,12 +390,10 @@ const globalPlotLayout = {
 function drawCorrelationPlot(data) {
     const plotArea = document.getElementById('plot-corr');
 
-    // NEW: Robustness check for empty data
     if (!data || !data.z || data.z.length === 0) {
         plotArea.innerHTML = '<div class="empty-plot-message">No correlation data to display.</div>';
         return;
     }
-    // Clear empty message if data is valid
     plotArea.innerHTML = '';
 
     const plotData = [{
@@ -414,7 +411,6 @@ function drawCorrelationPlot(data) {
     const layout = {
         ...globalPlotLayout,
         title: { ...globalPlotLayout.title, text: 'Correlation Matrix' },
-        // Override global automargin for heatmap's top-side X-axis
         xaxis: { automargin: true, side: 'top' },
         yaxis: { automargin: true },
         hovermode: 'closest'
@@ -427,7 +423,6 @@ function drawCorrelationPlot(data) {
 function drawCusumPlot(data) {
     const plotArea = document.getElementById('plot-cusum');
 
-    // NEW: Robustness check for empty data
     if (!data || !data.traces || data.traces.length === 0 || data.traces[0].data.length === 0) {
         plotArea.innerHTML = '<div class="empty-plot-message">No CUSUM data to display for this selection.</div>';
         return;
@@ -478,7 +473,6 @@ function drawCusumPlot(data) {
 function drawControlGraphPlot(data, colName, conf) {
     const plotArea = document.getElementById('plot-ctrl');
 
-    // NEW: Robustness check for empty data
     if (!data || data.length === 0) {
         plotArea.innerHTML = '<div class="empty-plot-message">No Control Graph data to display for these periods.</div>';
         return;
@@ -492,6 +486,7 @@ function drawControlGraphPlot(data, colName, conf) {
         if (trace.mode === 'markers') {
             hovertemplate = `%{x}<br><b>${colName}</b>: %{y:.2f}<br><i>${trace.name}</i><extra></extra>`;
         } else {
+            // This will now apply to the gray UCL/LCL/Avg lines
             hovertemplate = `<b>${trace.name}</b>: %{y:.2f}<extra></extra>`;
         }
 
@@ -502,12 +497,12 @@ function drawControlGraphPlot(data, colName, conf) {
             type: 'scatter',
             mode: trace.mode,
             line: {
-                color: trace.color,
+                color: trace.color, // This will be COLOR for markers, GRAY for lines
                 dash: trace.dash,
                 width: trace.width
             },
             marker: {
-                color: trace.color
+                color: trace.color // This will be COLOR for markers
             },
             hovertemplate: hovertemplate
         });

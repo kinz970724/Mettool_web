@@ -2,8 +2,8 @@ import logging
 import sys
 import os
 import io  # Use io for in-memory files
-import json # Keep this for standard json
-from pandas.io import json as pd_json # <-- 1. ADD THIS IMPORT
+import json
+from pandas.io import json as pd_json # For NaN-safe JSON
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -193,7 +193,6 @@ def run_correlation(params_proxy: dict) -> dict:
 
     file_buffer = m.export_filtered_data('Correlation')
 
-    # <-- 2. USE PD_JSON.DUMPS (handles np.nan) -->
     return {'plot_data_json': pd_json.dumps(plot_data), 'file_buffer': file_buffer}
 
 
@@ -223,7 +222,6 @@ def run_cusum(params_proxy: dict) -> dict:
 
     file_buffer = m.export_filtered_data('CUSUM')
 
-    # <-- 2. USE PD_JSON.DUMPS (handles np.nan) -->
     return {'plot_data_json': pd_json.dumps(plot_data), 'file_buffer': file_buffer}
 
 
@@ -256,12 +254,13 @@ def run_control_graph(params_proxy: dict) -> dict:
         d = tmp.get_data().sort_values(by=tmp.date_column)
         full_period_data.append(d)
 
+        # Data points (in color)
         plot_traces.append({
             'x': d[tmp.date_column].dt.strftime('%Y-%m-%d').tolist(),
             'y': d[col].tolist(),
             'name': f'{s} – {e}',
             'mode': 'markers',
-            'color': color,
+            'color': color, # Use the period color
             'dateColName': tmp.date_column
         })
 
@@ -271,23 +270,25 @@ def run_control_graph(params_proxy: dict) -> dict:
         if params['showLim']:
             up, lo = tmp.control_limits(col, conf)
             if not np.isnan(up):
+                # UCL Line (neutral gray)
                 plot_traces.append({
                     'x': [period_start_dt, period_end_dt],
                     'y': [up, up],
                     'name': f'UCL ({s}-{e})',
                     'mode': 'lines',
-                    'line': {'color': color, 'dash': 'dash', 'width': 2},
+                    'line': {'color': '#888888', 'dash': 'dash', 'width': 2}, # <-- THE FIX: Neutral color
                     'showlegend': False
                 })
+                # LCL Line (neutral gray)
                 plot_traces.append({
                     'x': [period_start_dt, period_end_dt],
                     'y': [lo, lo],
                     'name': f'LCL ({s}-{e})',
                     'mode': 'lines',
-                    'line': {'color': color, 'dash': 'dash', 'width': 2},
+                    'line': {'color': '#888888', 'dash': 'dash', 'width': 2}, # <-- THE FIX: Neutral color
                     'showlegend': False
                 })
-            else: # Handle NaN case, add empty lines so plotly doesn't break
+            else:
                 plot_traces.append({'x': [], 'y': [], 'mode': 'lines'})
                 plot_traces.append({'x': [], 'y': [], 'mode': 'lines'})
 
@@ -295,15 +296,16 @@ def run_control_graph(params_proxy: dict) -> dict:
         if params['showAvg']:
             avg = d[col].mean()
             if not np.isnan(avg):
+                # Average Line (neutral gray)
                 plot_traces.append({
                     'x': [period_start_dt, period_end_dt],
                     'y': [avg, avg],
                     'name': f'Avg ({s}-{e})',
                     'mode': 'lines',
-                    'line': {'color': color, 'dash': 'dot', 'width': 3},
+                    'line': {'color': '#888888', 'dash': 'dot', 'width': 3}, # <-- THE FIX: Neutral color
                     'showlegend': False
                 })
-            else: # Handle NaN case
+            else:
                 plot_traces.append({'x': [], 'y': [], 'mode': 'lines'})
 
     if full_period_data:
@@ -313,5 +315,4 @@ def run_control_graph(params_proxy: dict) -> dict:
 
     file_buffer = mettool_instance.export_filtered_data('Control')
 
-    # <-- 2. USE PD_JSON.DUMPS (handles np.nan) -->
     return {'plot_data_json': pd_json.dumps(plot_traces), 'file_buffer': file_buffer}
