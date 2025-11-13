@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>METOOL - Web</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+
+<div id="loader-overlay">
+    <div class="loader-content">
+        <div class="loader-spinner"></div>
+        <p>Loading Analysis Engine (Pyodide)...</p>
+        <p>This may take a moment on first visit.</p>
+    </div>
+</div>
+
+<h1>METOOL – Mining & Engineering TOOL-kit</h1>
+
+<div class="card">
+    <h2>File Selection</h2>
+    <blockquote>
+        <p><strong>Instructions:</strong><br>
+            1. Load an Excel file (.xlsx, .xls, .xlsm).<br>
+            2. Your sheet must contain a <strong>date column</strong> and one or more <strong>numeric data columns</strong> for analysis.
+        </p>
+    </blockquote>
+
+    <div class="form-grid">
+        <label for="file-input">Excel file:</label>
+        <input type="file" id="file-input" accept=".xlsx, .xls, .xlsm">
+
+        <label for="sheet-name">Sheet name:</label>
+        <select id="sheet-name" disabled></select>
+
+        <button id="btn-load">Load</button>
+        <button id="btn-clear">Clear</button>
+    </div>
+</div>
+
+<div class="tab-container">
+    <div class="tab-buttons">
+        <button class="tab-link active" onclick="openTab(event, 'Correlation')">Correlation</button>
+        <button class="tab-link" onclick="openTab(event, 'CUSUM')">CUSUM</button>
+        <button class="tab-link" onclick="openTab(event, 'ControlGraph')">Control Graph</button>
+    </div>
+
+    <div id="Correlation" class="tab-content active-tab">
+        <h3>Correlation Analysis</h3>
+        <div class="controls">
+            <label for="corr-start">Start Date:</label>
+            <input type="date" id="corr-start">
+
+            <label for="corr-end">End Date:</label>
+            <input type="date" id="corr-end">
+
+            <label for="corr-date-col">Date Column:</label>
+            <select id="corr-date-col"></select>
+        </div>
+        <label for="corr-cols">Columns (select multiple):</label>
+        <select id="corr-cols" class="column-list" multiple></select>
+
+        <div class="button-row">
+            <button id="btn-plot-corr" disabled>Plot Correlation</button>
+            <button id="btn-export-corr" class="btn-export" disabled>Export Data</button>
+        </div>
+
+        <div id="plot-corr" class="plot-area"></div>
+    </div>
+
+    <div id="CUSUM" class="tab-content">
+        <h3>CUSUM Analysis</h3>
+        <div class="controls">
+            <label for="cusum-start">Start Date:</label>
+            <input type="date" id="cusum-start">
+
+            <label for="cusum-end">End Date:</label>
+            <input type="date" id="cusum-end">
+
+            <label for="cusum-date-col">Date Column:</label>
+            <select id="cusum-date-col"></select>
+        </div>
+        <label for="cusum-cols">Columns (select 1 or 2):</label>
+        <select id="cusum-cols" class="column-list" multiple></select>
+
+        <div class="button-row">
+            <button id="btn-plot-cusum" disabled>Plot CUSUM</button>
+            <button id="btn-export-cusum" class="btn-export" disabled>Export Data</button>
+        </div>
+
+        <div id="plot-cusum" class="plot-area"></div>
+    </div>
+
+    <div id="ControlGraph" class="tab-content">
+        <h3>Control Graph</h3>
+        <div class="controls">
+            <label for="ctrl-date-col">Date Column:</label>
+            <select id="ctrl-date-col"></select>
+
+            <label for="ctrl-col">Column (select one):</label>
+            <select id="ctrl-col" class="column-list"></select>
+
+            <label for="ctrl-conf">Confidence %:</label>
+            <input type="number" id="ctrl-conf" value="95">
+        </div>
+        <div class="controls">
+            <label for="ctrl-show-lim"><input type="checkbox" id="ctrl-show-lim" checked> Show UCL/LCL</label>
+            <label for="ctrl-show-avg"><input type="checkbox" id="ctrl-show-avg" checked> Show Avg</label>
+        </div>
+
+        <h4 id="ctrl-periods-label">Date Periods</h4>
+        <div class="period-manager">
+            <select id="ctrl-periods-list" size="5" aria-labelledby="ctrl-periods-label"></select>
+            <div class="period-controls">
+                <label for="ctrl-period-start">Start:</label>
+                <input type="date" id="ctrl-period-start">
+
+                <label for="ctrl-period-end">End:</label>
+                <input type="date" id="ctrl-period-end">
+
+                <button id="btn-period-add" disabled>Add</button>
+                <button id="btn-period-del">Delete</button>
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button id="btn-plot-ctrl" disabled>Plot Control Graph</button>
+            <button id="btn-export-ctrl" class="btn-export" disabled>Export Data</button>
+        </div>
+
+        <div id="plot-ctrl" class="plot-area"></div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

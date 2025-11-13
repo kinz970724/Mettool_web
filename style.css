@@ -1,0 +1,286 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #005a9c;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Tabs */
+.tab-container {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background: #fdfdfd;
+}
+.tab-link {
+    background-color: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 20px;
+    font-size: 17px;
+    transition: 0.3s;
+    border-bottom: 3px solid transparent;
+}
+.tab-link:hover {
+    background-color: #f1f1f1;
+}
+.tab-link.active {
+    border-bottom: 3px solid #005a9c;
+    color: #005a9c;
+    font-weight: bold;
+}
+.tab-content {
+    padding: 20px;
+    display: none;
+    animation: fadeIn 0.5s;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Forms */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Important */
+}
+button {
+    background-color: #0078d4;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    position: relative; /* For loading spinner */
+    transition: 0.2s ease-in-out;
+}
+button:hover {
+    background-color: #005a9c;
+}
+button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+button#btn-clear {
+    background-color: #d9534f;
+}
+button#btn-clear:hover {
+    background-color: #c9302c;
+}
+
+.controls {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+.controls > label {
+    flex: 1;
+    min-width: 200px;
+}
+
+.column-list {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 15px;
+}
+
+.period-manager {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+.period-manager select {
+    width: 300px;
+}
+.period-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.period-controls input { width: 150px; }
+
+/* Plot Area Style */
+.plot-area {
+    width: 100%;
+    min-height: 450px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    /* NEW: Add relative positioning for the empty message */
+    position: relative;
+    display: flex; /* Use flex to center message */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loader */
+#loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+}
+.loader-content {
+    text-align: center;
+    color: #333;
+    font-size: 1.2em;
+}
+.loader-spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #0078d4;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Active Tab Rule */
+.tab-content.active-tab {
+    display: block;
+}
+
+/* Instruction block styling */
+blockquote {
+    background-color: #f4f7f6;
+    border-left: 5px solid #0078d4;
+    padding: 10px 15px;
+    margin: 15px 0 10px 0;
+    font-size: 0.9em;
+    color: #333;
+    border-radius: 0 4px 4px 0;
+}
+blockquote p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Professional Button Styles */
+.button-row {
+    display: flex;
+    gap: 10px;
+}
+.btn-export {
+    background-color: #107c10; /* Green for export */
+}
+.btn-export:hover {
+    background-color: #084c08;
+}
+
+/* Button Loading Spinner */
+.btn-loading {
+    color: transparent !important; /* Hide text */
+}
+.btn-loading::after {
+    content: "";
+    display: block;
+    width: 20px; /* Spinner size */
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -10px; /* -half width */
+    margin-top: -10px; /* -half height */
+}
+
+/* Toast Notification Styles */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast {
+    padding: 15px 20px;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    color: #ffffff;
+    font-weight: bold;
+    animation: slideIn 0.3s ease-out, fadeOut 0.5s ease-in 3.5s forwards;
+    opacity: 0;
+}
+.toast.success {
+    background-color: #107c10; /* Green */
+}
+.toast.error {
+    background-color: #d9534f; /* Red */
+}
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* === NEW: Empty Plot Message === */
+.empty-plot-message {
+    font-size: 1.1em;
+    color: #888888;
+    font-style: italic;
+}
